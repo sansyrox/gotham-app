@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gotham City Crime Tracker</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #1a202c;
+      }
+      .content {
+        background-color: #2d3748;
+      }
+      .title {
+        color: #ed8936;
+      }
+      .card {
+        background-color: #4a5568;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mx-auto p-6">
+      <div class="mb-6">
+        <div class="flex justify-between items-center">
+          <h1 class="text-5xl font-bold title">Gotham City Crime Tracker</h1>
+        </div>
+      </div>
+      <div class="content p-6 rounded-xl shadow-lg">
+        <h2 class="text-3xl font-bold mb-4 title">Report a Crime</h2>
+        <!-- Report Crime Section -->
+        <div class="flex space-x-4 mb-4">
+          <input
+            id="crime-data"
+            type="text"
+            class="flex-grow p-2 rounded-md"
+            placeholder="Crime Data"
+          />
+          <input
+            id="crime-date"
+            type="text"
+            class="flex-grow p-2 rounded-md"
+            placeholder="Date"
+          />
+          <button
+            id="report-crime-button"
+            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Report
+          </button>
+        </div>
+
+        <h2 class="text-3xl font-bold mb-4 title mt-6">Register User</h2>
+        <!-- Register User Section -->
+        <div class="flex space-x-4 mb-4">
+          <input
+            id="register-username"
+            type="text"
+            class="flex-grow p-2 rounded-md"
+            placeholder="Username"
+          />
+          <input
+            id="register-password"
+            type="password"
+            class="flex-grow p-2 rounded-md"
+            placeholder="Password"
+          />
+          <button
+            id="register-button"
+            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Register
+          </button>
+        </div>
+
+        <h2 class="text-3xl font-bold mb-4 title mt-6">Get All Crimes</h2>
+        <!-- Get All Crimes Section -->
+        <table class="table-auto text-white w-full" id="crimes-table">
+          <thead>
+            <tr>
+              <th class="px-4 py-2">Crime Data</th>
+              <th class="px-4 py-2">Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Crime Data Will Be Added Here -->
+          </tbody>
+        </table>
+
+        <h2 class="text-3xl font-bold mb-4 title mt-6">Login</h2>
+        <!-- Login Section -->
+        <div class="flex space-x-4 mb-4">
+          <input
+            id="login-username"
+            type="text"
+            class="flex-grow p-2 rounded-md"
+            placeholder="Username"
+          />
+          <input
+            id="login-password"
+            type="password"
+            class="flex-grow p-2 rounded-md"
+            placeholder="Password"
+          />
+          <button
+            id="login-button"
+            class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Login
+          </button>
+        </div>
+
+        <div class="mt-4 text-white" id="jwt-display">
+          <!-- JWT will be displayed here -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("report-crime-button")
+        .addEventListener("click", function () {
+          const crime = document.getElementById("crime-data").value;
+          const date = document.getElementById("crime-date").value;
+
+          fetch("/crimes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ crime_data: crime, date: date }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Crime reported:", data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+
+      document
+        .getElementById("register-button")
+        .addEventListener("click", function () {
+          const username = document.getElementById("register-username").value;
+          const password = document.getElementById("register-password").value;
+
+          fetch("/users/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: username, password: password }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("User registered:", data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+
+      fetch("/crimes")
+        .then((response) => response.json())
+        .then((data) => {
+          let table = document.getElementById("crimes-table");
+          data.forEach((item) => {
+            let row = table.insertRow();
+            let cell1 = row.insertCell();
+            let cell2 = row.insertCell();
+            cell1.textContent = item.crime_data;
+            cell2.textContent = item.date;
+          });
+        });
+
+      document
+        .getElementById("login-button")
+        .addEventListener("click", function () {
+          const username = document.getElementById("login-username").value;
+          const password = document.getElementById("login-password").value;
+
+          fetch("/users/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ username: username, password: password }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              document.getElementById("jwt-display").innerText =
+                "Access Token: " + data.access_token;
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        });
+    </script>
+  </body>
+</html>

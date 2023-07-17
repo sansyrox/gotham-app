@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "gotham-app"
+version = "0.1.0"
+description = ""
+authors = ["Sanskar Jethi <sansyrox@gmail.com>"]
+readme = "README.md"
+packages = [{include = "gotham_app"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+robyn = "^0.36.0"
+sqlalchemy = "^2.0.18"
+passlib = "^1.7.4"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+bcrypt = "^4.0.1"
+
+
+[tool.poetry.group.dev.dependencies]
+pynvim = "^0.4.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
