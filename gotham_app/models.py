@@ -46,15 +46,11 @@ class User(Base):
         )
 
 
+DATABASE_URL = "sqlite:///./gotham_crime_data.db"
+engine = create_engine(DATABASE_URL)
+db_session_maker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 if __name__ == "__main__":
-    # Create the database tables
-    DATABASE_URL = "sqlite:///./gotham_crime_data.db"
-
-    engine = create_engine(DATABASE_URL)
-
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
     Base.metadata.create_all(bind=engine)
 
